@@ -2,19 +2,15 @@
 
 ## Table of Contents
 
-* [Instructions](#instructions)
-* [Contributing](#contributing)
+* [Project Description](#Description)
+* [Game Rules](#Rules)
 
-## Instructions
+## Description
 
-The starter project has some HTML and CSS styling to display a static version of the Memory Game project. You'll need to convert this project from a static project to an interactive one. This will require modifying the HTML and CSS files, but primarily the JavaScript file.
+This project provides a web based version of the memory game based on javascript. As you would expect,
+index.html provides the web presentation, app.js the code driving the game and app.css the styling
 
-To get started, open `js/app.js` and start building out the app's functionality
+## Rules
 
-For specific, detailed instructions, look at the project instructions in the [Udacity Classroom](https://classroom.udacity.com/me).
-
-## Contributing
-
-This repository is the starter code for _all_ Udacity students. Therefore, we most likely will not accept pull requests.
-
-For details, check out [CONTRIBUTING.md](CONTRIBUTING.md).
+Click on a tile to see it. Click on another to see if there's a match. Repeat the process until you get a
+complete set of matched tiles
