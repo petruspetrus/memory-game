@@ -6,31 +6,24 @@
 * Initialise variable stack
 * --------------------------------------------------------------
 */
-//array for matched cards
+/*array for matched cards */
  arrCardsOpen = {};
-// array for card symbols
- var arrCardSymbols =['fa-anchor',
-   'fa-bicycle',
-   'fa-bolt',
-   'fa-bomb',
-   'fa-cube',
-   'fa-diamond',
-   'fa-leaf',
-   'fa-paper-plane-o',
-   'fa-anchor',
-   'fa-bicycle',
-   'fa-bolt',
-   'fa-bomb',
-   'fa-cube',
-   'fa-diamond',
-   'fa-leaf',
-   'fa-paper-plane-o'];
-// array for random numbers
-var arrRandomNumbers = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
-// totals
+/* initialise array for card symbols */
+const cardList = ['fa-anchor',
+  'fa-bicycle',
+  'fa-bolt',
+  'fa-bomb',
+  'fa-cube',
+  'fa-diamond',
+  'fa-leaf',
+  'fa-paper-plane-o'];
+const arrCardSymbols = cardList.concat(cardList);
+/* initialise array for random numbers */
+let arrRandomNumbers = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
+/* totals */
 let totGoes=0;                  // total turns taken
 let totMatches=0;               // total matches
-// game timer variables
+/* game timer variables */
 let gameElapsed=0;              // time variable for elapsed time
 let gameStart=0;                // time variable for start time
 let elapsedMinutes=0;           // elapsed minutes
@@ -38,9 +31,9 @@ let elapsedSeconds=0;           // elapsed seconds
 let elapsedHundredths=0;        // elapsed hundredths
 let gameTimerInterval=100;      // timer interval (100 equiv to 100'th second)
 let gameTimer=null;             // object for timer interval counter
-// booleans
+/* booleans */
 let gameEnded=false;            // boolean for game ended
-//
+/*
 /*--------------------------------------------------------------
 * Objective:  Shuffle an arraay of integers from 0 to 15 which will be
 *             used to randomise the game tile images
@@ -49,7 +42,7 @@ let gameEnded=false;            // boolean for game ended
 * --------------------------------------------------------------
 */
 function fcnShuffleArray(randomArray) {
-  var currentIndex = randomArray.length, temporaryValue, randomIndex;
+  let currentIndex = randomArray.length, temporaryValue, randomIndex;
   while (currentIndex !== 0) {
     randomIndex = Math.floor(Math.random() * currentIndex);
     currentIndex -= 1;
@@ -69,7 +62,7 @@ function fcnShuffleArray(randomArray) {
 */
 function agpSetCardStatus(cardID, cardStatus){
   let cardTile=document.getElementById(cardID);
-  let cardSymbol=cardTile.querySelector('i');
+  //let cardSymbol=cardTile.querySelector('i');
   switch(cardStatus){
     case 'match':
         cardTile.className="card match";
@@ -153,12 +146,9 @@ function agpToggleStar(totGoes){
  */
     let elementNumber=0
     if(totGoes>34) {
-      elementNumber=1;
-    }
-    else if(totGoes>26) {
       elementNumber=2;
     }
-    else if (totGoes>18) {
+    else if(totGoes>26) {
       elementNumber=3;
     }
     /* we could try and test whether we have already set the star
@@ -172,6 +162,54 @@ function agpToggleStar(totGoes){
       el.classList.add("fa-star-o");
     }
   }
+}
+
+/*--------------------------------------------------------------
+* Objective:  Set the timer running until game stopped
+* Parameters: nothing
+* Returns:    nothing
+* --------------------------------------------------------------
+*/
+function agpStartTimer(){
+  gameTimer = setInterval(function() {
+
+  /* Get todays date and time */
+  let gameDate=new Date();
+  gameElapsed = gameDate.getTime();
+
+  /* Find the elapsed time between now and the start time */
+  let elapsedTime = gameElapsed - gameStart;
+
+  /* Extract the elapsed minutes, seconds and one hundredths */
+  elapsedMinutes = Math.trunc((elapsedTime / 1000 )/60);
+  elapsedSeconds = Math.trunc((elapsedTime / 1000)-(elapsedMinutes*60));
+  elapsedHundredths=Math.trunc((elapsedTime /100)-(elapsedSeconds*10)-(elapsedMinutes*600));
+
+  /* If the game is still happening update timer */
+  if (!gameEnded==true) {
+      document.querySelector(".timer").innerHTML = elapsedMinutes + "m " + elapsedSeconds + ":" + elapsedHundredths + "s";
+      }
+  /* otherwise, close the timer down */
+  else{
+      clearInterval(gameTimer);
+    }
+  }, gameTimerInterval);
+}
+
+/*--------------------------------------------------------------
+* Objective:  Reset the game as user has pressed reset button.
+*             Assume user wants to play again so re-initialise game
+* Parameters: nothing
+* Returns:    nothing
+* --------------------------------------------------------------
+*/
+function agpResetGame(){
+  /* turn on the boolean to say we've ended */
+  gameEnded=true;
+  /* stop the timer event */
+  clearInterval(gameTimer);
+  /* reinitialise the game */
+  fcnInitialiseGame();
 }
 /*--------------------------------------------------------------
 * Objective:  Games finihed so display the scores and see whether
@@ -197,8 +235,8 @@ function agpGameOver(){
     });
 
     /* set up the modal content based on player's performance */
-    var modal = document.getElementById('modal-game-end');
-    var modalText = document.querySelector('.modal-text');
+    let modal = document.getElementById('modal-game-end');
+    let modalText = document.querySelector('.modal-text');
     modalText.innerHTML="Congratulations - you completed the quiz in " +
                           totGoes + " total moves and in a time of " +
                           elapsedMinutes + "m" +
@@ -214,8 +252,13 @@ function agpGameOver(){
 * --------------------------------------------------------------
 */
 function agpCardClicked(evt){
+  eventTarget=evt.target;
+  console.log(eventTarget.classList);
   /* if we've clicked on a card */
-  if(evt.target.classList.contains('card')||evt.target.classList.contains('fa')){
+  if(eventTarget.classList.contains('card')||eventTarget.classList.contains('fa')){
+    if (eventTarget.classList.contains('fa')){
+      eventTarget=eventTarget.parentNode;
+    }
     /* increment total moves counter */
     totGoes++;
     /* see if this is the first click and if so, set the timer running */
@@ -232,10 +275,10 @@ function agpCardClicked(evt){
 
     /* work out what to do with the card clicked
     *  if the card it is already matched just ignore it */
-    if (evt.target.classList.contains('match')){
+    if (eventTarget.classList.contains('match')){
       }
     /* if the card it is already turned over just ignore it */
-    else if (evt.target.classList.contains('show')){
+    else if (eventTarget.classList.contains('show')){
       }
     else{
       /* show the card */
@@ -244,44 +287,13 @@ function agpCardClicked(evt){
       cardNumber=evt.target.id.replace('card','');
       /* use the card number as the pointer into the array of card symbols
       *  to see what symbol has been selected */
-      var cardSymbolSelected=arrCardSymbols[arrRandomNumbers[cardNumber]];
+      let cardSymbolSelected=arrCardSymbols[arrRandomNumbers[cardNumber]];
       /* pause for a half second so that player can see the second card clicked before
       *  deciding what to do with it */
       setTimeout(function(){agpCardsOpen(evt.target.id,cardSymbolSelected);},500);
     };
   };
 };
-/*--------------------------------------------------------------
-* Objective:  Set the timer running until game stopped
-* Parameters: nothing
-* Returns:    nothing
-* --------------------------------------------------------------
-*/
-function agpStartTimer(){
-  gameTimer = setInterval(function() {
-
-  /* Get todays date and time */
-  let gameDate=new Date();
-  gameElapsed = gameDate.getTime();
-
-  /* Find the elapsed time between now and the start time */
-  var elapsedTime = gameElapsed - gameStart;
-
-  /* Extract the elapsed minutes, seconds and one hundredths */
-  elapsedMinutes = Math.trunc((elapsedTime / 1000 )/60);
-  elapsedSeconds = Math.trunc((elapsedTime / 1000)-(elapsedMinutes*60));
-  elapsedHundredths=Math.trunc((elapsedTime /100)-(elapsedSeconds*10)-(elapsedMinutes*600));
-
-  /* If the game is still happening update timer */
-  if (!gameEnded==true) {
-      document.querySelector(".timer").innerHTML = elapsedMinutes + "m " + elapsedSeconds + ":" + elapsedHundredths + "s";
-      }
-  /* otherwise, close the timer down */
-  else{
-      clearInterval(gameTimer);
-    }
-  }, gameTimerInterval);
-}
 /*--------------------------------------------------------------
 * Objective:  Initilise the game
 * Parameters: nothing
@@ -300,11 +312,11 @@ function fcnInitialiseGame(){
   *  select the random number in the i'th element and then point to the
   * symbol at the random number'th element of the symbol array. We will then
   * assign this to the n'th card in the DOM */
-  var i;
+  let i;
   for (i = 0; i < 16; i++) {
     /* select the card node and <i> element containing the font awesome symbol */
-    var cardTile=document.getElementById('card'+i)
-    var cardSymbol=cardTile.querySelector('i');
+    let cardTile=document.getElementById('card'+i)
+    let cardSymbol=cardTile.querySelector('i');
     /* prime the card with the symbol indexed by the random number in the array */
     cardSymbol.className="fa " + arrCardSymbols[arrRandomNumbers[i]];
     cardTile.className="card open";
@@ -321,21 +333,9 @@ function fcnInitialiseGame(){
   }
   /* reset the timer display */
   document.querySelector(".timer").innerHTML ="0m 0.0s";
-}
-/*--------------------------------------------------------------
-* Objective:  Reset the game as user has pressed reset button.
-*             Assume user wants to play again so re-initialise game
-* Parameters: nothing
-* Returns:    nothing
-* --------------------------------------------------------------
-*/
-function agpResetGame(){
-  /* turn on the boolean to say we've ended */
-  gameEnded=true;
-  /* stop the timer event */
-  clearInterval(gameTimer);
-  /* reinitialise the game */
-  fcnInitialiseGame();
+  /* clear down the comparison array to await next two cards clicked */
+  arrCardsOpen[0]=null;
+  arrCardsOpen[1]=null;
 }
 /*--------------------------------------------------------------
 * Objective:  Mainline controller
