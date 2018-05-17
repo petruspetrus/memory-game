@@ -259,19 +259,8 @@ function agpCardClicked(evt){
     if (eventTarget.classList.contains('fa')){
       eventTarget=eventTarget.parentNode;
     }
-    /* increment total moves counter */
-    totGoes++;
-    /* see if this is the first click and if so, set the timer running */
-    if(totGoes==1){
-      let gameDate = new Date();
-      gameStart=gameDate.getTime();
-      agpStartTimer()
-      }
-    /* increment the moves counter on the screen */
-    movesCounter=document.querySelector(".moves");
-    movesCounter.innerHTML=totGoes;
-    /* amend star rating as necessary */
-    agpToggleStar(totGoes);
+
+
 
     /* work out what to do with the card clicked
     *  if the card it is already matched just ignore it */
@@ -281,6 +270,20 @@ function agpCardClicked(evt){
     else if (eventTarget.classList.contains('show')){
       }
     else{
+      /* we have a legitimate move */
+      /* increment total moves counter */
+      totGoes++;
+      /* see if this is the first click and if so, set the timer running */
+      if(totGoes==1){
+        let gameDate = new Date();
+        gameStart=gameDate.getTime();
+        agpStartTimer()
+        }
+      /* increment the moves counter on the screen */
+      movesCounter=document.querySelector(".moves");
+      movesCounter.innerHTML=totGoes;
+      /* amend star rating as necessary */
+      agpToggleStar(totGoes);
       /* show the card */
       evt.target.className='card open show'
       /* work out which card was pressed based on its id of the form cardnn */
